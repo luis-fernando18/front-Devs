@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meu Perfil</title>
+
+
+
+
+  <!-- Fonte Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+
+
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Meu Perfil</h1>
+    </header>
+
+
+
+
+    <!-- Seção de informações -->
+    <section class="perfil-section">
+      <h2>Informações da conta</h2>
+      <div class="perfil-info">
+        <div class="foto-perfil">
+          <div class="foto" id="foto-preview"></div>
+          <button class="btn-alterar-foto" id="btnAlterarFoto"><strong>Alterar foto</strong></button>
+          <input type="file" id="inputFoto" accept="image/*" style="display: none;" />
+        </div>
+        <div class="campos">
+          <label>Nome</label>
+          <input type="text" value="" placeholder="Usuário Teste" />
+          <label>E-mail</label>
+          <input type="email" value="" placeholder="candidato@example.com" />
+          <label>Telefone</label>
+          <input type="text" value="" placeholder="(00) 00000-0000" />
+          <label>CEP</label>
+          <input type="text" value="" placeholder="00000-000" />
+          <label>Endereço</label>
+          <input type="text" value="" placeholder="Rua, número, bairro..." />
+        </div>
+      </div>
+    </section>
+
+
+
+
+    <!-- Seção de alterar senha -->
+    <section class="senha-section">
+      <h2>Alterar senha</h2>
+
+
+
+
+      <label>Senha atual</label>
+      <div class="input-senha">
+        <input type="password" id="senhaAtual" placeholder="Digite sua senha atual" />
+        <button type="button" class="toggle-senha" data-alvo="senhaAtual">
+          <svg class="icone-olho" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+        </button>
+      </div>
+
+
+
+
+      <label>Senha nova</label>
+      <div class="input-senha">
+        <input type="password" id="senhaNova" placeholder="Digite sua nova senha" />
+        <button type="button" class="toggle-senha" data-alvo="senhaNova">
+          <svg class="icone-olho" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+        </button>
+      </div>
+      <small id="senhaForcaTexto" class="senha-texto"></small>
+
+
+
+
+      <label>Confirmar nova senha</label>
+      <div class="input-senha">
+        <input type="password" id="confirmaSenha" placeholder="Confirme sua nova senha" />
+        <button type="button" class="toggle-senha" data-alvo="confirmaSenha">
+          <svg class="icone-olho" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+        </button>
+      </div>
+ 
+      <small id="senhaConfirmaTexto" class="senha-texto"></small>
+    </section>
+
+
+    <!-- Produtos favoritos -->
+    <section class="favoritos-section">
+      <h2>Produtos favoritos</h2>
+      <ul id="lista-favoritos"></ul>
+    </section>
+
+
+    <!-- Histórico de pedidos -->
+    <section class="pedidos-section">
+      <h2>Histórico de pedidos</h2>
+    </section>
+
+
+    <!-- Botões -->
+    <div class="botoes">
+      <button class="btn-primario">Salvar Perfil</button>
+      <button class="btn-secundario">Sair</button>
+    </div>
+  </div>
+
+
+  <script src="script.js"></script>
+</body>
+</html>
+ 
