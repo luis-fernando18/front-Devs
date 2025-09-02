@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel do Administrador</title>
+
+
+  <!-- Fonte Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+
+  <!-- Ícones Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Painel do Administrador</h1>
+    </header>
+
+
+    <!-- Seção de informações -->
+    <section class="perfil-section">
+      <h2>Informações da conta</h2>
+      <div class="perfil-info">
+        <div class="foto-perfil">
+          <div class="foto" id="foto-preview"></div>
+          <button class="btn-alterar-foto" id="btnAlterarFoto"><strong>Alterar foto</strong> </button>
+          <input type="file" id="inputFoto" accept="image/*" style="display: none;" />
+        </div>
+        <div class="campos">
+          <label>Nome</label>
+          <input type="text" placeholder="Administrador" />
+          <label>Nome da Loja</label>
+          <input type="text" placeholder="Minha Loja Exemplo" />
+          <label>CNPJ</label>
+          <input type="text" placeholder="00.000.000/0000-00" />
+          <label>E-mail</label>
+          <input type="email" placeholder="admin@example.com" />
+          <label>Telefone</label>
+          <input type="text" placeholder="(00) 00000-0000" />
+          <label>CEP</label>
+          <input type="text" placeholder="00000-000" />
+          <label>Endereço</label>
+          <input type="text" placeholder="Rua, número, bairro..." />
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Seção de alterar senha -->
+    <section class="senha-section">
+      <h2>Alterar senha</h2>
+
+
+      <label>Senha atual</label>
+      <div class="input-senha">
+        <input type="password" id="senhaAtual" placeholder="Digite sua senha atual" />
+        <button type="button" class="toggle-senha" data-alvo="senhaAtual">
+          <svg class="icone-olho" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+        </button>
+      </div>
+
+
+
+
+      <label>Senha nova</label>
+      <div class="input-senha">
+        <input type="password" id="senhaNova" placeholder="Digite sua nova senha" />
+        <button type="button" class="toggle-senha" data-alvo="senhaNova">
+          <svg class="icone-olho" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+        </button>
+      </div>
+      <small id="senhaForcaTexto" class="senha-texto"></small>
+
+
+      <label>Confirmar nova senha</label>
+      <div class="input-senha">
+        <input type="password" id="confirmaSenha" placeholder="Confirme sua nova senha" />
+        <button type="button" class="toggle-senha" data-alvo="confirmaSenha">
+          <svg class="icone-olho" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+        </button>
+      </div>
+      <small id="senhaConfirmaTexto" class="senha-texto"></small>
+    </section>
+
+
+
+
+    <!-- Gerenciamento de Produtos -->
+    <section class="produtos-section">
+      <h2>Gerenciamento de Produtos</h2>
+      <button class="btn-cadastrar" id="abrirModalProduto">+ Cadastrar Novo Produto</button>
+
+
+      <table>
+        <thead>
+          <tr>
+            <th>Imagem</th>
+            <th>Nome do Produto</th>
+            <th>Preço</th>
+            <th>Estoque</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="produtos-tabela">
+          <!-- Produtos aparecerão aqui -->
+        </tbody>
+      </table>
+    </section>
+
+
+    <!-- MODAL CADASTRAR/EDITAR -->
+    <div class="modal" id="modalProduto">
+      <div class="modal-content">
+        <span class="fechar" id="fecharModalProduto">&times;</span>
+        <h3 id="tituloModalProduto">Cadastrar Novo Produto</h3>
+        <form id="formProduto">
+          <input type="hidden" id="produtoId">
+
+
+          <label for="nomeProduto">Nome do Produto</label>
+          <input type="text" id="nomeProduto" required>
+
+
+          <label for="descricaoProduto">Descrição</label>
+          <textarea id="descricaoProduto" rows="3" required></textarea>
+
+
+          <label for="precoProduto">Preço</label>
+          <input type="number" id="precoProduto" step="0.01" min="0" required>
+
+
+          <label for="estoqueProduto">Estoque</label>
+          <input type="number" id="estoqueProduto" min="0" required>
+
+
+          <label for="imagemProduto">Imagem</label>
+          <input type="file" id="imagemProduto" accept="image/*">
+
+
+          <button type="submit" class="btn-primario">Salvar Produto</button>
+        </form>
+      </div>
+    </div>
+
+
+    <!-- Gerenciamento de Pedidos -->
+<section class="pedidos-section">
+  <h2>Gerenciamento de Pedidos</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID do Pedido</th>
+        <th>Data</th>
+        <th>Cliente</th>
+        <th>Valor Total</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="tabela-pedidos">
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>
+          <select>
+            <option value="processando">Processando</option>
+            <option value="enviado">Enviado</option>
+            <option value="concluido">Concluído</option>
+          </select>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+
+    <tbody id="tabela-pedidos">
+      <!-- Preenchido dinamicamente via JS -->
+    </tbody>
+  </table>
+</section>
+
+
+    <!-- Botões -->
+    <div class="botoes">
+      <button class="btn-primario">Salvar Perfil</button>
+      <button class="btn-secundario">Sair</button>
+    </div>
+  </div>
+
+
+  <script src="script.js"></script>
+</body>
+</html>
