@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meu Perfil</title>
+
+  
+  <!-- Fonte Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  
+  <link rel="stylesheet" href="MeuUsuário.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Meu Perfil</h1>
+    </header>
+
+
+    <!-- Seção de informações -->
+    <section class="perfil-section">
+      <h2>Informações da conta</h2>
+      <div class="perfil-info">
+        <div class="foto-perfil">
+          <div class="foto" id="foto-preview"></div>
+          <button class="btn-alterar-foto" id="btnAlterarFoto"><strong>Alterar foto</strong></button>
+          <input type="file" id="inputFoto" accept="image/*" style="display: none;" />
+        </div>
+        <div class="campos">
+          <label>Nome</label>
+          <input type="text" value="" placeholder="Usuário Teste" />
+          <label>E-mail</label>
+          <input type="email" value="" placeholder="candidato@example.com" />
+          <label>Telefone</label>
+          <input type="text" value="" placeholder="(00) 00000-0000" />
+          <label>CEP</label>
+          <input type="text" value="" placeholder="00000-000" />
+          <label>Endereço</label>
+          <input type="text" value="" placeholder="Rua, número, bairro..." />
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Seção de alterar senha -->
+    <section class="senha-section">
+      <h2>Alterar senha</h2>
+
+
+      <label>Senha atual</label>
+      <div class="input-senha">
+        <input type="password" id="senhaAtual" placeholder="Digite sua senha atual" />
+        <button type="button" class="toggle-senha" data-alvo="senhaAtual">
+          <svg class="icone-olho" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+        </button>
+      </div>
+
+
+      <label>Senha nova</label>
+      <div class="input-senha">
+        <input type="password" id="senhaNova" placeholder="Digite sua nova senha" />
+        <button type="button" class="toggle-senha" data-alvo="senhaNova">
+          <svg class="icone-olho" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+        </button>
+      </div>
+      <small id="senhaForcaTexto" class="senha-texto"></small>
+
+
+      <label>Confirmar nova senha</label>
+      <div class="input-senha">
+        <input type="password" id="confirmaSenha" placeholder="Confirme sua nova senha" />
+        <button type="button" class="toggle-senha" data-alvo="confirmaSenha">
+          <svg class="icone-olho" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+        </button>
+      </div>
+ 
+      <small id="senhaConfirmaTexto" class="senha-texto"></small>
+    </section>
+
+
+    <!-- Produtos favoritos -->
+    <section class="favoritos-section">
+      <h2>Produtos favoritos</h2>
+      <ul id="lista-favoritos"></ul>
+    </section>
+
+
+    <!-- Histórico de pedidos -->
+    <section class="pedidos-section">
+      <h2>Histórico de pedidos</h2>
+    </section>
+
+
+    <!-- Botões -->
+    <div class="botoes">
+      <button class="btn-primario">Salvar Perfil</button>
+      <button class="btn-secundario">Sair</button>
+    </div>
+  </div>
+
+
+  <script>
+// =======================================================
+ // NOVO SCRIPT PARA CONECTAR COM O BACK-END
+ // =======================================================
+
+ // --- Variáveis Globais ---
+ const token = localStorage.getItem('authToken');
+
+ // --- Elementos do HTML ---
+ const nomeInput = document.querySelector('.campos input[placeholder="Usuário Teste"]');
+ const emailInput = document.querySelector('.campos input[placeholder="candidato@example.com"]');
+ const telefoneInput = document.querySelector('.campos input[placeholder*="(00) 00000-0000"]');
+ const cepInput = document.querySelector('.campos input[placeholder*="00000-000"]');
+ const enderecoInput = document.querySelector('.campos input[placeholder*="Rua"]');
+ const fotoPreview = document.getElementById("foto-preview");
+ const inputFoto = document.getElementById("inputFoto");
+ const btnAlterarFoto = document.getElementById("btnAlterarFoto");
+
+ const senhaAtualInput = document.getElementById('senhaAtual');
+ const senhaNovaInput = document.getElementById('senhaNova');
+ const confirmaSenhaInput = document.getElementById('confirmaSenha');
+
+ const btnSalvarPerfil = document.querySelector('.btn-primario');
+ const btnSair = document.querySelector('.btn-secundario');
+ const listaFavoritosElement = document.getElementById('lista-favoritos');
+
+ // --- Funções Principais ---
+
+ async function carregarDadosDoPerfil() {
+     if (!token) {
+         alert('Você não está logado. Redirecionando para a página de login.');
+         window.location.href = '/login.cadastro/login.html';
+         return;
+     }
+
+     try {
+         const responsePerfil = await fetch('/api/usuarios/meuperfil', {
+             method: 'GET',
+             headers: { 'Authorization': `Bearer ${token}` }
+         });
+
+         if (!responsePerfil.ok) throw new Error('Falha ao buscar dados do perfil.');
+         
+         const usuario = await responsePerfil.json();
+
+         nomeInput.value = usuario.nome || '';
+         emailInput.value = usuario.email || '';
+         telefoneInput.value = usuario.telefone || '';
+         cepInput.value = usuario.cep || '';
+         enderecoInput.value = usuario.endereco || '';
+
+         await carregarFavoritos();
+         
+     } catch (error) {
+         console.error('Erro:', error);
+         if (error.message.includes('token')) {
+             logout();
+         } else {
+             alert(error.message);
+         }
+     }
+ }
+
+ async function carregarFavoritos() {
+     try {
+         const response = await fetch('/api/usuarios/favoritos', {
+             headers: { 'Authorization': `Bearer ${token}` }
+         });
+         if (!response.ok) throw new Error('Falha ao buscar favoritos.');
+
+         const favoritos = await response.json();
+         listaFavoritosElement.innerHTML = '';
+
+         if (favoritos.length === 0) {
+             listaFavoritosElement.innerHTML = '<li>Você ainda não tem produtos favoritos.</li>';
+             return;
+         }
+
+         favoritos.forEach(produto => {
+             const li = document.createElement('li');
+             li.innerHTML = `
+                 ${produto.nome}
+                 <button onclick="removerFavorito('${produto._id}')">Remover</button>
+             `;
+             listaFavoritosElement.appendChild(li);
+         });
+     } catch (error) {
+         console.error('Erro ao carregar favoritos:', error);
+     }
+ }
+
+ async function removerFavorito(produtoId) {
+     if (!confirm('Tem certeza que deseja remover este produto dos favoritos?')) return;
+
+     try {
+         const response = await fetch(`/api/usuarios/favoritos/${produtoId}`, {
+             method: 'DELETE',
+             headers: { 'Authorization': `Bearer ${token}` }
+         });
+
+         if (!response.ok) throw new Error('Falha ao remover favorito.');
+         
+         alert('Produto removido dos favoritos!');
+         await carregarFavoritos();
+     } catch (error) {
+         console.error('Erro:', error);
+         alert(error.message);
+     }
+ }
+
+ async function salvarPerfil() {
+    // Para enviar arquivos e texto, usamos FormData
+    const formData = new FormData();
+
+    // Adicionamos os campos de texto ao FormData
+    formData.append('nome', nomeInput.value);
+    formData.append('telefone', telefoneInput.value);
+    formData.append('cep', cepInput.value);
+    formData.append('endereco', enderecoInput.value);
+
+    // Verificamos se um novo arquivo de foto foi selecionado
+    if (inputFoto.files[0]) {
+        formData.append('fotoPerfil', inputFoto.files[0]);
+    }
+
+    try {
+        const response = await fetch('/api/usuarios/meuperfil', {
+            method: 'PUT',
+            headers: {
+                // IMPORTANTE: NÃO definimos 'Content-Type'. O navegador faz isso
+                // automaticamente para FormData, incluindo o 'boundary' correto.
+                'Authorization': `Bearer ${token}`
+            },
+            body: formData // Enviamos o objeto FormData
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.mensagem || 'Erro ao salvar perfil.');
+
+        alert('Perfil atualizado com sucesso!');
+        location.reload(); // Recarrega a página para mostrar os dados atualizados
+
+    } catch (error) {
+        console.error('Erro:', error);
+        alert(error.message);
+    }
+}
+
+// **** FUNÇÃO alterarSenha (agora separada) ****
+async function alterarSenha() {
+     const senhaAtual = senhaAtualInput.value;
+     const senhaNova = senhaNovaInput.value;
+     const confirmaSenha = confirmaSenhaInput.value;
+
+     if (!senhaAtual || !senhaNova || !confirmaSenha) {
+         alert('Por favor, preencha todos os campos de senha.');
+         return;
+     }
+
+     if (senhaNova !== confirmaSenha) {
+         alert('A nova senha e a confirmação não coincidem.');
+         return;
+     }
+     
+     try {
+         const response = await fetch('/api/usuarios/alterarsenha', {
+             method: 'PUT',
+             headers: {
+                 'Content-Type': 'application/json',
+                 'Authorization': `Bearer ${token}`
+             },
+             body: JSON.stringify({ senhaAtual, senhaNova, confirmaSenha })
+         });
+         
+         const data = await response.json();
+         if (!response.ok) throw new Error(data.mensagem || 'Erro ao alterar senha.');
+
+         alert('Senha alterada com sucesso! Você será desconectado por segurança.');
+         logout();
+
+     } catch (error) {
+         console.error('Erro:', error);
+         alert(error.message);
+     }
+ }
+
+ function logout() {
+     localStorage.removeItem('authToken');
+     window.location.href = '/login.cadastro/login.html';
+ }
+
+ // --- Event Listeners ---
+
+window.addEventListener('DOMContentLoaded', carregarDadosDoPerfil);
+
+ btnSalvarPerfil.addEventListener('click', () => {
+     if (senhaAtualInput.value || senhaNovaInput.value || confirmaSenhaInput.value) {
+         alterarSenha();
+     } else {
+         salvarPerfil();
+     }
+ });
+
+ btnSair.addEventListener('click', logout);
+
+ // Adiciona a funcionalidade ao botão de alterar foto
+ btnAlterarFoto.addEventListener("click", () => {
+   inputFoto.click();
+ });
+
+ inputFoto.addEventListener("change", () => {
+   const file = inputFoto.files[0];
+   if (file) {
+     const reader = new FileReader();
+     reader.onload = (e) => {
+       fotoPreview.style.backgroundImage = `url(${e.target.result})`;
+     };
+     reader.readAsDataURL(file);
+   }
+ });
+
+ // Adiciona a funcionalidade de "olho" para as senhas
+ document.querySelectorAll(".toggle-senha").forEach(botao => {
+   botao.addEventListener("click", () => {
+     const campoId = botao.getAttribute("data-alvo");
+     const campo = document.getElementById(campoId);
+     if (campo.type === "password") {
+       campo.type = "text";
+     } else {
+       campo.type = "password";
+     }
+   });
+ });
+    </script>
+
+</body>
+</html>

@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const validator = require('validator');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const upload = require('../config/multerConfig');
 
 // Importa o nosso modelo de Usuário
 const Usuario = require('../models/Usuario');
@@ -101,41 +102,39 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.put('/meuperfil', authMiddleware, async (req, res) => {
+// =======================================================
+// ROTA PARA ATUALIZAR O PERFIL (VERSÃO CORRIGIDA)
+// =======================================================
+router.put('/meuperfil', authMiddleware, upload.single('fotoPerfil'), async (req, res) => {
     try {
-        const { nome, cep, endereco, telefone } = req.body;
-        const usuarioId = req.usuario.id; // ID pego do token pelo middleware
+        // Pega os dados de texto do req.body
+        const dadosParaAtualizar = { ...req.body };
+        const usuarioId = req.usuario.id;
 
-        const camposParaAtualizar = { nome, cep, endereco, telefone };
+        // Verifica se um novo arquivo de foto foi enviado pelo front-end
+        // O multer o deixará disponível em 'req.file'
+        if (req.file) {
+            // Se sim, adicionamos o caminho do arquivo salvo aos dados que serão atualizados
+            dadosParaAtualizar.fotoUrl = `/uploads/${req.file.filename}`;
+        }
 
+        // Encontra o usuário pelo ID e atualiza com os novos dados
         const usuarioAtualizado = await Usuario.findByIdAndUpdate(
             usuarioId,
-            camposParaAtualizar,
-            { new: true } // Retorna o documento já atualizado
+            dadosParaAtualizar,
+            { new: true } // Esta opção garante que a variável retornada já contenha os dados atualizados
         ).select('-senha');
 
         if (!usuarioAtualizado) {
             return res.status(404).json({ mensagem: "Usuário não encontrado." });
         }
 
+        // Envia a resposta de sucesso com o usuário atualizado
         res.json({ mensagem: "Perfil atualizado com sucesso!", usuario: usuarioAtualizado });
 
     } catch (error) {
         console.error(error);
         res.status(500).json({ mensagem: "Erro ao atualizar o perfil." });
-    }
-});
-
-router.get('/meuperfil', authMiddleware, async (req, res) => {
-    
-    try {
-        if (!req.usuario) {
-            return res.status(404).json({ mensagem: 'Usuário não encontrado.' });
-        }
-        res.json(req.usuario);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ mensagem: "Erro ao buscar dados do perfil." });
     }
 });
 
