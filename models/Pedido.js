@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const PedidoSchema = new mongoose.Schema({
     usuario: {
@@ -50,4 +50,4 @@ const PedidoSchema = new mongoose.Schema({
 
 const Pedido = mongoose.model('Pedido', PedidoSchema);
 
-module.exports = Pedido;
+export default Pedido;

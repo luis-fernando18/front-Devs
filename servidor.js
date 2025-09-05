@@ -1,52 +1,44 @@
 // Em: servidor.js
 
-require('dotenv').config();
+import dotenv from "dotenv";
+import express from "express";
+import mongoose from "mongoose";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const express = require('express');
-const mongoose = require('mongoose');
-const path = require('path'); // Módulo nativo do Node para lidar com caminhos
+// Para __dirname funcionar em ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config();
 
 const app = express();
 const port = 3000;
 
 // --- Middlewares Essenciais ---
-app.use(express.json()); // Para o Express entender JSON
+app.use(express.json());
 
-// **CORREÇÃO 1: SERVIR ARQUIVOS ESTÁTICOS**
-// Esta linha diz ao Express para servir todos os arquivos da pasta 'public'.
-// É isso que permite que o navegador acesse os arquivos HTML, CSS e JS.
-app.use(express.static(path.join(__dirname, 'public')));
+// --- Servindo os Arquivos do Front-End ---
+// Esta linha garante que qualquer arquivo dentro da pasta 'public' seja acessível.
+app.use(express.static(path.join(__dirname, "public")));
 
 // --- Conexão com o MongoDB ---
-mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://260472024:eniacecommerce712@cluster0.jm8drnk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&tlsAllowInvalidCertificates=true')
-    .then(() => console.log('Conectado ao MongoDB...'))
-    .catch(err => console.error('Não foi possível conectar ao MongoDB...', err));
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("Conectado ao MongoDB..."))
+  .catch(err => console.error("Erro ao conectar ao MongoDB:", err));
 
-// --- Importando as Rotas ---
-const rotasUsuario = require('./routes/rotasUsuario');
-const rotasProduto = require('./routes/rotasProduto');
-const rotasPedido = require('./routes/rotasPedido');
+// --- Importando as Rotas da API ---
+import rotasUsuario from "./routes/rotasUsuario.js";
+import rotasProduto from "./routes/rotasProduto.js";
+import rotasPedido from "./routes/rotasPedido.js";
 
 // --- Usando as Rotas da API ---
-// **CORREÇÃO 2: REMOVIDAS LINHAS DUPLICADAS**
-// Todas as requisições que começam com /api/... serão direcionadas para os arquivos de rota.
-app.use('/api/usuarios', rotasUsuario);
-app.use('/api/produtos', rotasProduto);
-app.use('/api/pedidos', rotasPedido);
+app.use("/api/usuarios", rotasUsuario);
+app.use("/api/produtos", rotasProduto);
+app.use("/api/pedidos", rotasPedido);
 
-// --- Rota "Catch-All" para o Front-End ---
-// **BÔNUS: MELHORIA DE QUALIDADE DE VIDA**
-// Esta rota garante que se o usuário atualizar a página (F5) em /meu-usuario.html,
-// o servidor ainda entregue a página HTML correta em vez de dar um erro "Cannot GET".
-app.get('*', (req, res) => {
-    // Verificamos se a requisição não é para a API
-    if (!req.originalUrl.startsWith('/api')) {
-        // Se não for, enviamos o arquivo principal do front-end (ajuste o nome se for diferente)
-        res.sendFile(path.join(__dirname, 'public', 'login.cadastro', 'login.html'));
-    }
-});
 
 // --- Iniciando o Servidor ---
 app.listen(port, () => {
-    console.log(`Servidor rodando em http://localhost:${port}`);
+  console.log(`Servidor rodando em http://localhost:${port}`);
 });

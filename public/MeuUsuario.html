@@ -29,17 +29,17 @@
           <input type="file" id="inputFoto" accept="image/*" style="display: none;" />
         </div>
         <div class="campos">
-          <label>Nome</label>
-          <input type="text" value="" placeholder="Usuário Teste" />
-          <label>E-mail</label>
-          <input type="email" value="" placeholder="candidato@example.com" />
-          <label>Telefone</label>
-          <input type="text" value="" placeholder="(00) 00000-0000" />
-          <label>CEP</label>
-          <input type="text" value="" placeholder="00000-000" />
-          <label>Endereço</label>
-          <input type="text" value="" placeholder="Rua, número, bairro..." />
-        </div>
+    <label>Nome</label>
+    <input type="text" id="nomeUsuario" placeholder="Usuário Teste" />
+    <label>E-mail</label>
+    <input type="email" id="emailUsuario" placeholder="candidato@example.com" disabled />
+    <label>Telefone</label>
+    <input type="text" id="telefoneUsuario" placeholder="(00) 00000-0000" />
+    <label>CEP</label>
+    <input type="text" id="cepUsuario" placeholder="00000-000" />
+    <label>Endereço</label>
+    <input type="text" id="enderecoUsuario" placeholder="Rua, número, bairro..." />
+</div>
       </div>
     </section>
 
@@ -117,126 +117,121 @@
 
 
   <script>
-// =======================================================
- // NOVO SCRIPT PARA CONECTAR COM O BACK-END
- // =======================================================
+// Em: public/MeuUsuario.html
 
- // --- Variáveis Globais ---
- const token = localStorage.getItem('authToken');
+// --- Variáveis Globais ---
+const token = localStorage.getItem('authToken');
 
- // --- Elementos do HTML ---
- const nomeInput = document.querySelector('.campos input[placeholder="Usuário Teste"]');
- const emailInput = document.querySelector('.campos input[placeholder="candidato@example.com"]');
- const telefoneInput = document.querySelector('.campos input[placeholder*="(00) 00000-0000"]');
- const cepInput = document.querySelector('.campos input[placeholder*="00000-000"]');
- const enderecoInput = document.querySelector('.campos input[placeholder*="Rua"]');
- const fotoPreview = document.getElementById("foto-preview");
- const inputFoto = document.getElementById("inputFoto");
- const btnAlterarFoto = document.getElementById("btnAlterarFoto");
+// --- Elementos do HTML (Seletores Corrigidos e Mais Robustos) ---
+const nomeInput = document.getElementById('nomeUsuario');
+const emailInput = document.getElementById('emailUsuario');
+const telefoneInput = document.getElementById('telefoneUsuario');
+const cepInput = document.getElementById('cepUsuario');
+const enderecoInput = document.getElementById('enderecoUsuario');
+const fotoPreview = document.getElementById("foto-preview");
+const inputFoto = document.getElementById("inputFoto");
+const btnAlterarFoto = document.getElementById("btnAlterarFoto");
+const senhaAtualInput = document.getElementById('senhaAtual');
+const senhaNovaInput = document.getElementById('senhaNova');
+const confirmaSenhaInput = document.getElementById('confirmaSenha');
+const btnSalvarPerfil = document.querySelector('.btn-primario');
+const btnSair = document.querySelector('.btn-secundario');
+const listaFavoritosElement = document.getElementById('lista-favoritos');
 
- const senhaAtualInput = document.getElementById('senhaAtual');
- const senhaNovaInput = document.getElementById('senhaNova');
- const confirmaSenhaInput = document.getElementById('confirmaSenha');
+// O resto do seu script continua exatamente o mesmo...
 
- const btnSalvarPerfil = document.querySelector('.btn-primario');
- const btnSair = document.querySelector('.btn-secundario');
- const listaFavoritosElement = document.getElementById('lista-favoritos');
+// --- Funções Principais ---
 
- // --- Funções Principais ---
+async function carregarDadosDoPerfil() {
+    if (!token) {
+        alert('Você não está logado. Redirecionando para a página de login.');
+        window.location.href = '/login.cadastro/login.html';
+        return;
+    }
 
- async function carregarDadosDoPerfil() {
-     if (!token) {
-         alert('Você não está logado. Redirecionando para a página de login.');
-         window.location.href = '/login.cadastro/login.html';
-         return;
-     }
+    try {
+        const responsePerfil = await fetch('/api/usuarios/meuperfil', {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
 
-     try {
-         const responsePerfil = await fetch('/api/usuarios/meuperfil', {
-             method: 'GET',
-             headers: { 'Authorization': `Bearer ${token}` }
-         });
+        if (!responsePerfil.ok) throw new Error('Falha ao buscar dados do perfil.');
+        
+        const usuario = await responsePerfil.json();
 
-         if (!responsePerfil.ok) throw new Error('Falha ao buscar dados do perfil.');
-         
-         const usuario = await responsePerfil.json();
+        nomeInput.value = usuario.nome || '';
+        emailInput.value = usuario.email || '';
+        telefoneInput.value = usuario.telefone || '';
+        cepInput.value = usuario.cep || '';
+        enderecoInput.value = usuario.endereco || '';
+        if (usuario.fotoUrl) {
+            fotoPreview.style.backgroundImage = `url(${usuario.fotoUrl})`;
+        }
 
-         nomeInput.value = usuario.nome || '';
-         emailInput.value = usuario.email || '';
-         telefoneInput.value = usuario.telefone || '';
-         cepInput.value = usuario.cep || '';
-         enderecoInput.value = usuario.endereco || '';
+        await carregarFavoritos();
+        
+    } catch (error) {
+        console.error('Erro:', error);
+        if (error.message.includes('token')) {
+            logout();
+        }
+    }
+}
 
-         await carregarFavoritos();
-         
-     } catch (error) {
-         console.error('Erro:', error);
-         if (error.message.includes('token')) {
-             logout();
-         } else {
-             alert(error.message);
-         }
-     }
- }
+async function carregarFavoritos() {
+    try {
+        const response = await fetch('/api/usuarios/favoritos', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error('Falha ao buscar favoritos.');
 
- async function carregarFavoritos() {
-     try {
-         const response = await fetch('/api/usuarios/favoritos', {
-             headers: { 'Authorization': `Bearer ${token}` }
-         });
-         if (!response.ok) throw new Error('Falha ao buscar favoritos.');
+        const favoritos = await response.json();
+        listaFavoritosElement.innerHTML = '';
 
-         const favoritos = await response.json();
-         listaFavoritosElement.innerHTML = '';
+        if (favoritos.length === 0) {
+            listaFavoritosElement.innerHTML = '<li>Você ainda não tem produtos favoritos.</li>';
+            return;
+        }
 
-         if (favoritos.length === 0) {
-             listaFavoritosElement.innerHTML = '<li>Você ainda não tem produtos favoritos.</li>';
-             return;
-         }
+        favoritos.forEach(produto => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                ${produto.nome}
+                <button onclick="removerFavorito('${produto._id}')">Remover</button>
+            `;
+            listaFavoritosElement.appendChild(li);
+        });
+    } catch (error) {
+        console.error('Erro ao carregar favoritos:', error);
+    }
+}
 
-         favoritos.forEach(produto => {
-             const li = document.createElement('li');
-             li.innerHTML = `
-                 ${produto.nome}
-                 <button onclick="removerFavorito('${produto._id}')">Remover</button>
-             `;
-             listaFavoritosElement.appendChild(li);
-         });
-     } catch (error) {
-         console.error('Erro ao carregar favoritos:', error);
-     }
- }
+async function removerFavorito(produtoId) {
+    if (!confirm('Tem certeza que deseja remover este produto dos favoritos?')) return;
 
- async function removerFavorito(produtoId) {
-     if (!confirm('Tem certeza que deseja remover este produto dos favoritos?')) return;
+    try {
+        const response = await fetch(`/api/usuarios/favoritos/${produtoId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
 
-     try {
-         const response = await fetch(`/api/usuarios/favoritos/${produtoId}`, {
-             method: 'DELETE',
-             headers: { 'Authorization': `Bearer ${token}` }
-         });
+        if (!response.ok) throw new Error('Falha ao remover favorito.');
+        
+        alert('Produto removido dos favoritos!');
+        await carregarFavoritos();
+    } catch (error) {
+        console.error('Erro:', error);
+        alert(error.message);
+    }
+}
 
-         if (!response.ok) throw new Error('Falha ao remover favorito.');
-         
-         alert('Produto removido dos favoritos!');
-         await carregarFavoritos();
-     } catch (error) {
-         console.error('Erro:', error);
-         alert(error.message);
-     }
- }
-
- async function salvarPerfil() {
-    // Para enviar arquivos e texto, usamos FormData
+async function salvarPerfil() {
     const formData = new FormData();
-
-    // Adicionamos os campos de texto ao FormData
     formData.append('nome', nomeInput.value);
     formData.append('telefone', telefoneInput.value);
     formData.append('cep', cepInput.value);
     formData.append('endereco', enderecoInput.value);
 
-    // Verificamos se um novo arquivo de foto foi selecionado
     if (inputFoto.files[0]) {
         formData.append('fotoPerfil', inputFoto.files[0]);
     }
@@ -245,18 +240,16 @@
         const response = await fetch('/api/usuarios/meuperfil', {
             method: 'PUT',
             headers: {
-                // IMPORTANTE: NÃO definimos 'Content-Type'. O navegador faz isso
-                // automaticamente para FormData, incluindo o 'boundary' correto.
                 'Authorization': `Bearer ${token}`
             },
-            body: formData // Enviamos o objeto FormData
+            body: formData
         });
 
         const data = await response.json();
         if (!response.ok) throw new Error(data.mensagem || 'Erro ao salvar perfil.');
 
         alert('Perfil atualizado com sucesso!');
-        location.reload(); // Recarrega a página para mostrar os dados atualizados
+        location.reload();
 
     } catch (error) {
         console.error('Erro:', error);
@@ -264,7 +257,6 @@
     }
 }
 
-// **** FUNÇÃO alterarSenha (agora separada) ****
 async function alterarSenha() {
      const senhaAtual = senhaAtualInput.value;
      const senhaNova = senhaNovaInput.value;
@@ -308,47 +300,34 @@ async function alterarSenha() {
  }
 
  // --- Event Listeners ---
-
 window.addEventListener('DOMContentLoaded', carregarDadosDoPerfil);
 
- btnSalvarPerfil.addEventListener('click', () => {
-     if (senhaAtualInput.value || senhaNovaInput.value || confirmaSenhaInput.value) {
-         alterarSenha();
-     } else {
-         salvarPerfil();
-     }
- });
+btnSalvarPerfil.addEventListener('click', () => {
+    // Lógica para decidir qual função chamar
+    const camposDeSenhaPreenchidos = senhaAtualInput.value || senhaNovaInput.value || confirmaSenhaInput.value;
+    if (camposDeSenhaPreenchidos) {
+        alterarSenha();
+    } else {
+        salvarPerfil();
+    }
+});
 
- btnSair.addEventListener('click', logout);
+btnSair.addEventListener('click', logout);
 
- // Adiciona a funcionalidade ao botão de alterar foto
- btnAlterarFoto.addEventListener("click", () => {
-   inputFoto.click();
- });
+btnAlterarFoto.addEventListener("click", () => {
+  inputFoto.click();
+});
 
- inputFoto.addEventListener("change", () => {
-   const file = inputFoto.files[0];
-   if (file) {
-     const reader = new FileReader();
-     reader.onload = (e) => {
-       fotoPreview.style.backgroundImage = `url(${e.target.result})`;
-     };
-     reader.readAsDataURL(file);
-   }
- });
-
- // Adiciona a funcionalidade de "olho" para as senhas
- document.querySelectorAll(".toggle-senha").forEach(botao => {
-   botao.addEventListener("click", () => {
-     const campoId = botao.getAttribute("data-alvo");
-     const campo = document.getElementById(campoId);
-     if (campo.type === "password") {
-       campo.type = "text";
-     } else {
-       campo.type = "password";
-     }
-   });
- });
+inputFoto.addEventListener("change", () => {
+  const file = inputFoto.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      fotoPreview.style.backgroundImage = `url(${e.target.result})`;
+    };
+    reader.readAsDataURL(file);
+  }
+});
     </script>
 
 </body>

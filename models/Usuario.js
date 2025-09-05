@@ -1,6 +1,6 @@
 
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 const UsuarioSchema = new mongoose.Schema({
     nome: {
@@ -21,17 +21,17 @@ const UsuarioSchema = new mongoose.Schema({
         select: false  
     },cep: {
         type: String,
-        required: true, 
+        required: false, 
         trim: true
     },
     endereco: {
         type: String,
-        required: true,
+        required: false,
         trim: true
     },
     telefone: {
         type: String,
-        required: true,
+        required: false,
         trim: true
     },
 
@@ -77,4 +77,4 @@ UsuarioSchema.pre('save', async function(next) {
 
 const Usuario = mongoose.model('Usuario', UsuarioSchema);
 
-module.exports = Usuario;
+export default Usuario;

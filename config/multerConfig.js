@@ -1,5 +1,6 @@
-const multer = require('multer');
-const path = require('path'); // Módulo 'path' do Node.js para lidar com caminhos de arquivos
+
+import multer from 'multer';
+import path from 'path'; // Módulo 'path' do Node.js para lidar com caminhos de arquivos
 
 const storage = multer.diskStorage({
     // Define a pasta onde os arquivos serão salvos
@@ -13,5 +14,5 @@ const storage = multer.diskStorage({
     }
 });
 
-// Exporta a configuração do multer
-module.exports = multer({ storage: storage });
+// Exporta a configuração do multer usando 'export default'
+export default multer({ storage: storage });
