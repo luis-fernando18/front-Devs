@@ -122,7 +122,7 @@
 // --- Variáveis Globais ---
 const token = localStorage.getItem('authToken');
 
-// --- Elementos do HTML (Seletores Corrigidos e Mais Robustos) ---
+// --- Elementos do HTML (Seletores) ---
 const nomeInput = document.getElementById('nomeUsuario');
 const emailInput = document.getElementById('emailUsuario');
 const telefoneInput = document.getElementById('telefoneUsuario');
@@ -138,178 +138,173 @@ const btnSalvarPerfil = document.querySelector('.btn-primario');
 const btnSair = document.querySelector('.btn-secundario');
 const listaFavoritosElement = document.getElementById('lista-favoritos');
 
-// O resto do seu script continua exatamente o mesmo...
-
 // --- Funções Principais ---
-
 async function carregarDadosDoPerfil() {
-    if (!token) {
-        alert('Você não está logado. Redirecionando para a página de login.');
-        window.location.href = '/login.cadastro/login.html';
-        return;
+  if (!token) {
+    alert('Você não está logado. Redirecionando para a página de login.');
+    window.location.href = '/login.cadastro/login.html';
+    return;
+  }
+
+  try {
+    const responsePerfil = await fetch('/api/usuarios/meuperfil', {
+      method: 'GET',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (!responsePerfil.ok) throw new Error('Falha ao buscar dados do perfil.');
+
+    const usuario = await responsePerfil.json();
+
+    nomeInput.value = usuario.nome || '';
+    emailInput.value = usuario.email || '';
+    telefoneInput.value = usuario.telefone || '';
+    cepInput.value = usuario.cep || '';
+    enderecoInput.value = usuario.endereco || '';
+
+    if (usuario.fotoUrl) {
+      fotoPreview.style.backgroundImage = `url(${usuario.fotoUrl})`;
     }
 
-    try {
-        const responsePerfil = await fetch('/api/usuarios/meuperfil', {
-            method: 'GET',
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        if (!responsePerfil.ok) throw new Error('Falha ao buscar dados do perfil.');
-        
-        const usuario = await responsePerfil.json();
-
-        nomeInput.value = usuario.nome || '';
-        emailInput.value = usuario.email || '';
-        telefoneInput.value = usuario.telefone || '';
-        cepInput.value = usuario.cep || '';
-        enderecoInput.value = usuario.endereco || '';
-        if (usuario.fotoUrl) {
-            fotoPreview.style.backgroundImage = `url(${usuario.fotoUrl})`;
-        }
-
-        await carregarFavoritos();
-        
-    } catch (error) {
-        console.error('Erro:', error);
-        if (error.message.includes('token')) {
-            logout();
-        }
+    await carregarFavoritos();
+  } catch (error) {
+    console.error('Erro:', error);
+    if (error.message.includes('token')) {
+      logout();
     }
+  }
 }
 
 async function carregarFavoritos() {
-    try {
-        const response = await fetch('/api/usuarios/favoritos', {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (!response.ok) throw new Error('Falha ao buscar favoritos.');
+  try {
+    const response = await fetch('/api/usuarios/favoritos', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
 
-        const favoritos = await response.json();
-        listaFavoritosElement.innerHTML = '';
+    if (!response.ok) throw new Error('Falha ao buscar favoritos.');
 
-        if (favoritos.length === 0) {
-            listaFavoritosElement.innerHTML = '<li>Você ainda não tem produtos favoritos.</li>';
-            return;
-        }
+    const favoritos = await response.json();
+    listaFavoritosElement.innerHTML = '';
 
-        favoritos.forEach(produto => {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                ${produto.nome}
-                <button onclick="removerFavorito('${produto._id}')">Remover</button>
-            `;
-            listaFavoritosElement.appendChild(li);
-        });
-    } catch (error) {
-        console.error('Erro ao carregar favoritos:', error);
+    if (favoritos.length === 0) {
+      listaFavoritosElement.innerHTML = '<li>Você ainda não tem produtos favoritos.</li>';
+      return;
     }
+
+    favoritos.forEach(produto => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        ${produto.nome}
+        <button onclick="removerFavorito('${produto._id}')">Remover</button>
+      `;
+      listaFavoritosElement.appendChild(li);
+    });
+  } catch (error) {
+    console.error('Erro ao carregar favoritos:', error);
+  }
 }
 
 async function removerFavorito(produtoId) {
-    if (!confirm('Tem certeza que deseja remover este produto dos favoritos?')) return;
+  if (!confirm('Tem certeza que deseja remover este produto dos favoritos?')) return;
 
-    try {
-        const response = await fetch(`/api/usuarios/favoritos/${produtoId}`, {
-            method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
+  try {
+    const response = await fetch(`/api/usuarios/favoritos/${produtoId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
 
-        if (!response.ok) throw new Error('Falha ao remover favorito.');
-        
-        alert('Produto removido dos favoritos!');
-        await carregarFavoritos();
-    } catch (error) {
-        console.error('Erro:', error);
-        alert(error.message);
-    }
+    if (!response.ok) throw new Error('Falha ao remover favorito.');
+
+    alert('Produto removido dos favoritos!');
+    await carregarFavoritos();
+  } catch (error) {
+    console.error('Erro:', error);
+    alert(error.message);
+  }
 }
 
 async function salvarPerfil() {
-    const formData = new FormData();
-    formData.append('nome', nomeInput.value);
-    formData.append('telefone', telefoneInput.value);
-    formData.append('cep', cepInput.value);
-    formData.append('endereco', enderecoInput.value);
+  const formData = new FormData();
+  formData.append('nome', nomeInput.value);
+  formData.append('telefone', telefoneInput.value);
+  formData.append('cep', cepInput.value);
+  formData.append('endereco', enderecoInput.value);
 
-    if (inputFoto.files[0]) {
-        formData.append('fotoPerfil', inputFoto.files[0]);
-    }
+  if (inputFoto.files[0]) {
+    formData.append('fotoPerfil', inputFoto.files[0]);
+  }
 
-    try {
-        const response = await fetch('/api/usuarios/meuperfil', {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
-            body: formData
-        });
+  try {
+    const response = await fetch('/api/usuarios/meuperfil', {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: formData
+    });
 
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.mensagem || 'Erro ao salvar perfil.');
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.mensagem || 'Erro ao salvar perfil.');
 
-        alert('Perfil atualizado com sucesso!');
-        location.reload();
-
-    } catch (error) {
-        console.error('Erro:', error);
-        alert(error.message);
-    }
+    alert('Perfil atualizado com sucesso!');
+    location.reload();
+  } catch (error) {
+    console.error('Erro:', error);
+    alert(error.message);
+  }
 }
 
 async function alterarSenha() {
-     const senhaAtual = senhaAtualInput.value;
-     const senhaNova = senhaNovaInput.value;
-     const confirmaSenha = confirmaSenhaInput.value;
+  const senhaAtual = senhaAtualInput.value;
+  const senhaNova = senhaNovaInput.value;
+  const confirmaSenha = confirmaSenhaInput.value;
 
-     if (!senhaAtual || !senhaNova || !confirmaSenha) {
-         alert('Por favor, preencha todos os campos de senha.');
-         return;
-     }
+  if (!senhaAtual || !senhaNova || !confirmaSenha) {
+    alert('Por favor, preencha todos os campos de senha.');
+    return;
+  }
 
-     if (senhaNova !== confirmaSenha) {
-         alert('A nova senha e a confirmação não coincidem.');
-         return;
-     }
-     
-     try {
-         const response = await fetch('/api/usuarios/alterarsenha', {
-             method: 'PUT',
-             headers: {
-                 'Content-Type': 'application/json',
-                 'Authorization': `Bearer ${token}`
-             },
-             body: JSON.stringify({ senhaAtual, senhaNova, confirmaSenha })
-         });
-         
-         const data = await response.json();
-         if (!response.ok) throw new Error(data.mensagem || 'Erro ao alterar senha.');
+  if (senhaNova !== confirmaSenha) {
+    alert('A nova senha e a confirmação não coincidem.');
+    return;
+  }
 
-         alert('Senha alterada com sucesso! Você será desconectado por segurança.');
-         logout();
+  try {
+    const response = await fetch('/api/usuarios/alterarsenha', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ senhaAtual, senhaNova, confirmaSenha })
+    });
 
-     } catch (error) {
-         console.error('Erro:', error);
-         alert(error.message);
-     }
- }
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.mensagem || 'Erro ao alterar senha.');
 
- function logout() {
-     localStorage.removeItem('authToken');
-     window.location.href = '/login.cadastro/login.html';
- }
+    alert('Senha alterada com sucesso! Você será desconectado por segurança.');
+    logout();
+  } catch (error) {
+    console.error('Erro:', error);
+    alert(error.message);
+  }
+}
 
- // --- Event Listeners ---
+function logout() {
+  localStorage.removeItem('authToken');
+  window.location.href = '/login.cadastro/login.html';
+}
+
+// --- Event Listeners ---
 window.addEventListener('DOMContentLoaded', carregarDadosDoPerfil);
 
 btnSalvarPerfil.addEventListener('click', () => {
-    // Lógica para decidir qual função chamar
-    const camposDeSenhaPreenchidos = senhaAtualInput.value || senhaNovaInput.value || confirmaSenhaInput.value;
-    if (camposDeSenhaPreenchidos) {
-        alterarSenha();
-    } else {
-        salvarPerfil();
-    }
+  const camposDeSenhaPreenchidos = senhaAtualInput.value || senhaNovaInput.value || confirmaSenhaInput.value;
+  if (camposDeSenhaPreenchidos) {
+    alterarSenha();
+  } else {
+    salvarPerfil();
+  }
 });
 
 btnSair.addEventListener('click', logout);
@@ -329,46 +324,23 @@ inputFoto.addEventListener("change", () => {
   }
 });
 
-const svgOlhoAberto = `
-<svg class="icone-olho" xmlns="http://www.w3.org/2000/svg" fill="none"
- viewBox="0 0 24 24" stroke="currentColor">
- <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-   d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
- <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-   d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268
-   2.943 9.542 7-1.274 4.057-5.065 7-9.542
-   7-4.477 0-8.268-2.943-9.542-7z" />
-</svg>
-`;
-
-const svgOlhoFechado = `
-<svg class="icone-olho" xmlns="http://www.w3.org/2000/svg" fill="none"
- viewBox="0 0 24 24" stroke="currentColor">
- <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-   d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477
-   0-8.268-2.943-9.542-7a10.05 10.05 0
-   012.153-3.592M6.634 6.634A9.956 9.956 0
-   0112 5c4.477 0 8.268 2.943 9.542
-   7-.458 1.459-1.241 2.763-2.247
-   3.802M15 12a3 3 0 01-3 3m0-6a3 3
-   0 013 3m-6 0a3 3 0 003-3m0 6v.01" />
- <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-   d="M3 3l18 18" />
-</svg>
-`;
+//  Funções extras para senha
+const senhaTexto = document.getElementById("senhaForcaTexto");
+const senhaConfirmaTexto = document.getElementById("senhaConfirmaTexto");
 
 // Alternar mostrar/ocultar senha
 document.querySelectorAll(".toggle-senha").forEach(botao => {
   botao.addEventListener("click", () => {
     const campoId = botao.getAttribute("data-alvo");
     const campo = document.getElementById(campoId);
+    const icone = botao.querySelector("svg path:last-child");
 
     if (campo.type === "password") {
       campo.type = "text";
-      botao.innerHTML = svgOlhoFechado;
+      icone.setAttribute("d", "M3 3l18 18M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a10.05 10.05 0 012.153-3.592M6.634 6.634A9.956 9.956 0 0112 5c4.477 0 8.268 2.943 9.542 7-.458 1.459-1.241 2.763-2.247 3.802");
     } else {
       campo.type = "password";
-      botao.innerHTML = svgOlhoAberto;
+      icone.setAttribute("d", "M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z");
     }
   });
 });
@@ -433,8 +405,7 @@ function validarConfirmacaoSenha() {
 
 confirmaSenhaInput.addEventListener("input", validarConfirmacaoSenha);
 senhaNovaInput.addEventListener("input", validarConfirmacaoSenha);
-
-    </script>
+</script>
 
 </body>
 </html>
