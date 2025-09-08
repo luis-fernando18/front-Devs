@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sua Conta - Pagamentos</title>
+    
+    <link rel="stylesheet" href="suaconta.css">
+    
+    <link rel="stylesheet" href="pagamentos.css"> 
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="hero">
+        <div class="container">
+            <p class="breadcrumbs"><a href="#">Sua Conta</a> &gt; Pagamentos</p>
+            <h1>Gerenciar Formas de Pagamento</h1>
+            <p>Adicione ou remova seus cartões de crédito e débito.</p>
+        </div>
+    </header>
+
+    <main class="container-main">
+
+       <!-- <section class="section" id="meus-cartoes">
+            <h2>Meus Cartões Salvos</h2>
+            
+            <div class="payment-method-item card">
+                <div class="card-brand-icon">
+                    <i class="fab fa-cc-visa"></i>
+                </div>
+                <div class="card-details">
+                    <h3>Visa final •••• 1234</h3>
+                    <p>Validade: 10/2027</p>
+                </div>
+                <div class="card-actions">
+                    <button class="btn btn-secondary">Editar</button>
+                    <button class="btn btn-danger">Remover</button>
+                </div>
+            </div>
+
+            <div class="payment-method-item card">
+                <div class="card-brand-icon">
+                    <i class="fab fa-cc-mastercard"></i>
+                </div>
+                <div class="card-details">
+                    <h3>Mastercard final •••• 5678</h3>
+                    <p>Validade: 08/2025</p>
+                </div>
+                <div class="card-actions">
+                    <button class="btn btn-secondary">Editar</button>
+                    <button class="btn btn-danger">Remover</button>
+                </div>
+            </div>
+        </section>--> 
+
+        <section class="section" id="adicionar-cartao">
+            <h2>Adicionar Novo Cartão de Crédito/Débito</h2>
+            
+            <form class="payment-form card">
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="card-holder-name">Nome no Cartão</label>
+                        <input type="text" id="card-holder-name" placeholder="Ex: Joao M. Silva">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="card-number">Número do Cartão</label>
+                        <input type="text" id="card-number" placeholder="0000 0000 0000 0000">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group small-group">
+                        <label for="expiry-date">Data de Validade (MM/AA)</label>
+                        <input type="text" id="expiry-date" placeholder="MM/AA">
+                    </div>
+                    <div class="form-group small-group">
+                        <label for="cvv">CVV</label>
+                        <input type="text" id="cvv" placeholder="123">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                     <button type="submit" class="btn btn-primary full-width">Salvar Cartão</button>
+                </div>
+                
+                <p class="security-note">
+                    <i class="fas fa-lock"></i> Suas informações de pagamento são protegidas.
+                </p>
+            </form>
+        </section>
+
+    </main>
+
+    <footer>
+    <div class="footer-wrap">
+      <div>©1946–2025, Eniac.edu.br, Inc. ou suas afiliadas — Todos os direitos reservados.</div>
+      <div>
+        <a href="#">Política de Privacidade</a> ·
+        <a href="#">Termos de Uso</a> ·
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
