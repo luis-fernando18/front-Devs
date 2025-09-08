@@ -328,7 +328,113 @@ inputFoto.addEventListener("change", () => {
     reader.readAsDataURL(file);
   }
 });
-    </script>
+
+// SVGs
+const svgOlhoAberto = `
+<svg class="icone-olho" xmlns="http://www.w3.org/2000/svg" fill="none"
+ viewBox="0 0 24 24" stroke="currentColor">
+ <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+   d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+ <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+   d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268
+   2.943 9.542 7-1.274 4.057-5.065 7-9.542
+   7-4.477 0-8.268-2.943-9.542-7z" />
+</svg>
+`;
+
+const svgOlhoFechado = `
+<svg class="icone-olho" xmlns="http://www.w3.org/2000/svg" fill="none"
+ viewBox="0 0 24 24" stroke="currentColor">
+ <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+   d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477
+   0-8.268-2.943-9.542-7a10.05 10.05 0
+   012.153-3.592M6.634 6.634A9.956 9.956 0
+   0112 5c4.477 0 8.268 2.943 9.542
+   7-.458 1.459-1.241 2.763-2.247
+   3.802M15 12a3 3 0 01-3 3m0-6a3 3
+   0 013 3m-6 0a3 3 0 003-3m0 6v.01" />
+ <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+   d="M3 3l18 18" />
+</svg>
+`;
+
+// Alternar mostrar/ocultar senha
+document.querySelectorAll(".toggle-senha").forEach(botao => {
+  botao.addEventListener("click", () => {
+    const campoId = botao.getAttribute("data-alvo");
+    const campo = document.getElementById(campoId);
+
+    if (campo.type === "password") {
+      campo.type = "text";
+      botao.innerHTML = svgOlhoFechado;
+    } else {
+      campo.type = "password";
+      botao.innerHTML = svgOlhoAberto;
+    }
+  });
+});
+
+// Força da senha
+function verificarForcaSenha(senha) {
+  let forca = 0;
+  if (senha.length >= 6) forca++;
+  if (/[A-Z]/.test(senha)) forca++;
+  if (/[a-z]/.test(senha)) forca++;
+  if (/[0-9]/.test(senha)) forca++;
+  if (/[@~$!=%*?_&"'-+#¨^:;<>,.{})()]/.test(senha)) forca++;
+  return forca;
+}
+
+senhaNovaInput.addEventListener("input", () => {
+  const valor = senhaNovaInput.value;
+  const forca = verificarForcaSenha(valor);
+
+  senhaNovaInput.classList.remove("senha-fraca", "senha-media", "senha-forte");
+  senhaTexto.classList.remove("fraca", "media", "forte");
+  senhaTexto.textContent = "";
+
+  if (valor.length === 0) return;
+
+  if (forca <= 2) {
+    senhaNovaInput.classList.add("senha-fraca");
+    senhaTexto.textContent = "Senha fraca";
+    senhaTexto.classList.add("fraca");
+  } else if (forca === 3 || forca === 4) {
+    senhaNovaInput.classList.add("senha-media");
+    senhaTexto.textContent = "Senha média";
+    senhaTexto.classList.add("media");
+  } else if (forca === 5) {
+    senhaNovaInput.classList.add("senha-forte");
+    senhaTexto.textContent = "Senha forte";
+    senhaTexto.classList.add("forte");
+  }
+});
+
+// Confirmação de senha
+function validarConfirmacaoSenha() {
+  senhaConfirmaTexto.textContent = "";
+  senhaConfirmaTexto.classList.remove("fraca", "forte");
+  confirmaSenhaInput.classList.remove("senha-fraca", "senha-forte");
+
+  if (confirmaSenhaInput.value === "") {
+    confirmaSenhaInput.style.border = "1px solid #ccc";
+    return;
+  }
+
+  if (confirmaSenhaInput.value === senhaNovaInput.value) {
+    confirmaSenhaInput.classList.add("senha-forte");
+    senhaConfirmaTexto.textContent = "Senhas coincidem";
+    senhaConfirmaTexto.classList.add("forte");
+  } else {
+    confirmaSenhaInput.classList.add("senha-fraca");
+    senhaConfirmaTexto.textContent = "Senhas não coincidem";
+    senhaConfirmaTexto.classList.add("fraca");
+  }
+}
+
+confirmaSenhaInput.addEventListener("input", validarConfirmacaoSenha);
+senhaNovaInput.addEventListener("input", validarConfirmacaoSenha);
+</script>
 
 </body>
 </html>
