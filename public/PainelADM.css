@@ -122,8 +122,7 @@ input:disabled {
   margin-top: 20px;
 }
 
-
-.btn-primario {
+#btnSalvarPerfil {
   background-color: #E5993B;
   color: #021724;
   padding: 10px 16px;
@@ -134,7 +133,7 @@ input:disabled {
 }
 
 
-.btn-secundario {
+#btnSair {
   background-color: #E5993B;
   color: #021724;
   border: 2px solid #E5993B;
