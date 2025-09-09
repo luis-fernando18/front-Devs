@@ -532,46 +532,23 @@ function fazerLogout() {
 });
 
 
-const svgOlhoAberto = `
-<svg class="icone-olho" xmlns="http://www.w3.org/2000/svg" fill="none"
- viewBox="0 0 24 24" stroke="currentColor">
- <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-   d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
- <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-   d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268
-   2.943 9.542 7-1.274 4.057-5.065 7-9.542
-   7-4.477 0-8.268-2.943-9.542-7z" />
-</svg>
-`;
-
-const svgOlhoFechado = `
-<svg class="icone-olho" xmlns="http://www.w3.org/2000/svg" fill="none"
- viewBox="0 0 24 24" stroke="currentColor">
- <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-   d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477
-   0-8.268-2.943-9.542-7a10.05 10.05 0
-   012.153-3.592M6.634 6.634A9.956 9.956 0
-   0112 5c4.477 0 8.268 2.943 9.542
-   7-.458 1.459-1.241 2.763-2.247
-   3.802M15 12a3 3 0 01-3 3m0-6a3 3
-   0 013 3m-6 0a3 3 0 003-3m0 6v.01" />
- <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-   d="M3 3l18 18" />
-</svg>
-`;
+//  Funções extras para senha
+const senhaTexto = document.getElementById("senhaForcaTexto");
+const senhaConfirmaTexto = document.getElementById("senhaConfirmaTexto");
 
 // Alternar mostrar/ocultar senha
 document.querySelectorAll(".toggle-senha").forEach(botao => {
   botao.addEventListener("click", () => {
     const campoId = botao.getAttribute("data-alvo");
     const campo = document.getElementById(campoId);
+    const icone = botao.querySelector("svg path:last-child");
 
     if (campo.type === "password") {
       campo.type = "text";
-      botao.innerHTML = svgOlhoFechado;
+      icone.setAttribute("d", "M3 3l18 18M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a10.05 10.05 0 012.153-3.592M6.634 6.634A9.956 9.956 0 0112 5c4.477 0 8.268 2.943 9.542 7-.458 1.459-1.241 2.763-2.247 3.802");
     } else {
       campo.type = "password";
-      botao.innerHTML = svgOlhoAberto;
+      icone.setAttribute("d", "M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z");
     }
   });
 });
