@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cadastro de Venda Eniac</title>
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon" width=50px>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #e5993b;
+      color: #333;
+      padding: 0;
+      margin: 0;
+    }
+
+
+    .eniac-header {
+      text-align: center;
+      background-color: #021724;
+      padding: 1rem 0;
+      animation: fadeInDown 0.8s ease-out;
+    }
+
+
+    .eniac-header img {
+      width: 220px;
+      max-width: 90%;
+    }
+
+
+    .form-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 120px); /* altura total menos o header */
+      padding: 2rem;
+    }
+
+    .form-wrapper {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 2.5rem 2rem;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s ease;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 1.8rem;
+      color: #003366;
+    }
+
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      margin-bottom: 0.3rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="file"],
+    select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
+      border-radius: 6px;
+      font-size: 1rem;
+      background-color: #f9f9f9;
+      transition: all 0.3s ease;
+    }
+
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #4facfe;
+      box-shadow: 0 0 0 4px rgba(79, 172, 254, 0.2);
+    }
+
+    button {
+      margin-top: 2rem;
+      width: 100%;
+      padding: 14px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      background: #021724;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 242, 254, 0.3);
+    }
+
+    .image-preview {
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .image-preview img {
+      max-width: 100%;
+      max-height: 300px;
+      border-radius: 10px;
+      margin-top: 0.5rem;
+    }
+
+    .eniac-footer {
+      text-align: center;
+      font-size: 13px;
+      color: #555;
+      padding: 20px;
+      background-color: #021724;
+      margin-top: auto;
+    }
+
+    .eniac-footer a {
+    margin: 0 10px;
+    color: #0066c0;
+    text-decoration: none;
+    }
+    
+    .eniac-footer a:hover {
+    text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      .form-wrapper {
+        padding: 2rem 1.5rem;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+
+
+
+      button {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+
+
+<body>
+
+
+  <div class="eniac-header">
+    <img src="Logo.png" alt="Logo Eniac">
+  </div>
+
+  <div class="form-container">
+    <div class="form-wrapper" role="form" aria-label="Formulário de Cadastro de Venda">
+      <h2>Cadastro de Venda</h2>
+
+      <form action="processa_venda.php" method="POST" enctype="multipart/form-data">
+        <label for="item">Nome do Item:</label>
+        <input type="text" id="item" name="item" required placeholder="Ex: Impressora HP" aria-label="Nome do item">
+
+        <label for="quantidade">Quantidade:</label>
+        <input type="number" id="quantidade" name="quantidade" required min="1" step="1" placeholder="Ex: 2" aria-label="Quantidade de itens">
+
+        <label for="valor">Valor Unitário (R$):</label>
+        <input type="number" id="valor" name="valor" required step="0.01" min="0.01" placeholder="Ex: 349.99" aria-label="Valor unitário do item">
+
+        <label for="data">Data da Venda:</label>
+        <input type="date" id="data" name="data" required aria-label="Data da venda">
+
+        <label for="imagem">Imagem do Objeto:</label>
+        <input type="file" id="imagem" name="imagem" accept="image/*" onchange="previewImagem(event)" aria-label="Escolher imagem do objeto">
+        
+        <button type="button" id="removeImageBtn" style="display:none; margin-top: 0.5rem; width:50px; height: 50px; align-items: center;" onclick="removeImage()"><span>X</span></button>
+        
+        <div class="image-preview" id="preview"></div>
+
+        <button type="button" id="removeImageBtn" style="display:none; margin-top: 0.5rem; width:50px; height: 50px; align-items: center;" onclick="removeImage()"><span>X</span></button>
+
+      <button type="submit" aria-label="Enviar cadastro de venda">Concluir Cadastro</button>
+      </form>
+    </div>
+  </div>
+  
+  <footer class="eniac-footer">
+    <a href="#">Termos de Uso</a>
+    <a href="#">Privacidade</a>
+    <a href="#">Ajuda</a>
+    <p>© 1946–2025, Eniac.com, Inc. ou suas afiliadas</p>
+  </footer>
+
+  <script>
+  function previewImagem(event) {
+  const preview = document.getElementById('preview');
+  const removeBtn = document.getElementById('removeImageBtn');
+  preview.innerHTML = '';
+
+  const file = event.target.files[0];
+  if (file && file.type.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.alt = "Pré-visualização da imagem do objeto";
+      preview.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+    removeBtn.style.display = 'inline-block'; 
+  } else {
+    removeBtn.style.display = 'none'; 
+  }
+}
+
+function removeImage() {
+  const inputFile = document.getElementById('imagem');
+  const preview = document.getElementById('preview');
+  const removeBtn = document.getElementById('removeImageBtn');
+  
+  inputFile.value = '';       
+  preview.innerHTML = '';    
+  removeBtn.style.display = 'none';
+}
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
