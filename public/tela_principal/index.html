@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Eniac Vendas</title>
+    <link rel="stylesheet" href="css.css" />
+    <link rel="icon" href="data:," />
+</head>
+
+<div id="productModal" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-backdrop" data-close="true"></div>
+    <div class="modal-dialog" role="document" tabindex="-1">
+        <button class="modal-close" aria-label="Fechar detalhes" data-close="true">×</button>
+
+        <div class="modal-media">
+            <img id="modalImg" alt="" />
+        </div>
+
+        <div class="modal-content">
+            <h2 id="modalTitle"></h2>
+            <p id="modalDesc" class="modal-desc"></p>
+
+            <div class="modal-price">
+                <span id="modalNow" class="now"></span>
+                <span id="modalOld" class="old"></span>
+            </div>
+
+            <div id="modalBadges" class="badges"></div>
+            <div id="modalRating" class="rating"></div>
+            <div id="modalStock" class="stock"></div>
+
+            <div class="modal-actions">
+                <button id="modalAdd" class="btn primary">Adicionar ao carrinho</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<body>
+    <header class="topbar">
+        <a href="#" class="logo" aria-label="Página inicial">
+            <svg viewBox="0 0 300 60" role="img" aria-label="Lojão Azul">
+                <text x="0" y="42" font-size="42" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial"
+                    font-weight="800" fill="white">Eniac</text>
+                <text x="140" y="42" font-size="42"
+                    font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial" font-weight="800"
+                    fill="#9fd3ff">Vendas</text>
+            </svg>
+        </a>
+
+        <div class="deliver">
+            <span class="deliver-top">Enviar para</span>
+            <span class="deliver-bottom">Brasil</span>
+        </div>
+
+        <form id="searchForm" class="searchbar" role="search">
+            <select id="searchCategory" aria-label="Categoria de busca">
+                <option value="all">Todas</option>
+                <option value="Electronics">Eletrônicos</option>
+                <option value="Computers">Computadores</option>
+                <option value="Books">Livros</option>
+                <option value="Home & Kitchen">Casa e Cozinha</option>
+                <option value="Fashion">Moda</option>
+                <option value="Beauty & Personal Care">Beleza</option>
+                <option value="Toys & Games">Brinquedos e Jogos</option>
+                <option value="Sports & Outdoors">Esportes</option>
+                <option value="Automotive">Automotivo</option>
+                <option value="Pet Supplies">Pets</option>
+                <option value="Grocery">Mercado</option>
+                <option value="Health & Household">Saúde</option>
+                <option value="Baby">Bebê</option>
+                <option value="Video Games">Games</option>
+                <option value="Industrial & Scientific">Industrial</option>
+            </select>
+            <input id="searchInput" type="search" placeholder="Busque por produtos..." aria-label="Buscar" />
+            <button class="btn-search" aria-label="Pesquisar">
+                🔍
+            </button>
+        </form>
+
+        <nav class="account-area" aria-label="Acesso rápido">
+            <a href="#" class="account-link">
+                <span class="small">Olá, faça login</span>
+                <span class="big">Contas e Listas ▾</span>
+            </a>
+            <a href="#" class="account-link">
+                <span class="small">Devoluções</span>
+                <span class="big">e Pedidos</span>
+            </a>
+            <a href="#" class="cart" aria-label="Carrinho">
+                🛒 <span id="cartCount" class="cart-count">0</span>
+            </a>
+        </nav>
+    </header>
+
+    <div class="subnav">
+        <button id="menuToggle" class="menu-button" aria-expanded="false" aria-controls="sidebar">☰ Todos</button>
+        <ul class="subnav-links">
+            <li><a href="#" data-tag="ofertas">Ofertas</a></li>
+            <li><a href="#" data-tag="prime">Entrega Rápida</a></li>
+            <li><a href="#" data-tag="lancamentos">Lançamentos</a></li>
+            <li><a href="#" data-tag="mais-vendidos">Mais Vendidos</a></li>
+            <li><a href="#" data-tag="atendimento">Atendimento</a></li>
+        </ul>
+    </div>
+
+    <main class="layout">
+        <aside id="sidebar" class="sidebar" aria-label="Categorias">
+            <h2 class="sidebar-title">Categorias</h2>
+            <ul class="category-list" id="categoryList">
+                <li><label><input type="checkbox" value="Electronics" /> Eletrônicos</label></li>
+                <li><label><input type="checkbox" value="Computers" /> Computadores</label></li>
+                <li><label><input type="checkbox" value="Books" /> Livros</label></li>
+                <li><label><input type="checkbox" value="Home & Kitchen" /> Casa e Cozinha</label></li>
+                <li><label><input type="checkbox" value="Fashion" /> Moda</label></li>
+                <li><label><input type="checkbox" value="Beauty & Personal Care" /> Beleza</label></li>
+                <li><label><input type="checkbox" value="Toys & Games" /> Brinquedos e Jogos</label></li>
+                <li><label><input type="checkbox" value="Sports & Outdoors" /> Esportes e Aventura</label></li>
+                <li><label><input type="checkbox" value="Automotive" /> Automotivo</label></li>
+                <li><label><input type="checkbox" value="Pet Supplies" /> Pets</label></li>
+                <li><label><input type="checkbox" value="Grocery" /> Mercado</label></li>
+                <li><label><input type="checkbox" value="Health & Household" /> Saúde e Limpeza</label></li>
+                <li><label><input type="checkbox" value="Baby" /> Bebê</label></li>
+                <li><label><input type="checkbox" value="Video Games" /> Video Games</label></li>
+                <li><label><input type="checkbox" value="Industrial & Scientific" /> Industrial e Científico</label>
+                </li>
+            </ul>
+
+            <hr />
+            <h3 class="sidebar-title">Filtros Rápidos</h3>
+            <div class="quick-filters">
+                <label><input type="checkbox" id="filterPrime" /> Entrega Rápida</label>
+                <label><input type="checkbox" id="filterDeals" /> Em Oferta</label>
+                <label><input type="checkbox" id="filterInStock" checked /> Em Estoque</label>
+            </div>
+
+            <button id="clearFilters" class="btn-clear">Limpar filtros</button>
+        </aside>
+
+        <section class="content">
+            <div class="hero">
+                <div class="hero-text">
+                    <h1>Ofertas do dia</h1>
+                    <p>Descubra produtos selecionados com <strong>entrega rápida</strong> e preços imperdíveis.</p>
+                    <a href="#" class="btn-hero">Ver todas as ofertas</a>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="sort-wrap">
+                    <label for="sortSelect">Ordenar por:</label>
+                    <select id="sortSelect">
+                        <option value="relevance">Relevância</option>
+                        <option value="price-asc">Preço: menor → maior</option>
+                        <option value="price-desc">Preço: maior → menor</option>
+                        <option value="rating-desc">Avaliação</option>
+                    </select>
+                </div>
+                <div class="count-wrap">
+                    <span id="resultsCount">0 resultados</span>
+                </div>
+            </div>
+
+            <div id="productGrid" class="grid" aria-live="polite" aria-busy="false"></div>
+        </section>
+    </main>
+    <button class="support-btn" id="supportToggle">💬</button>
+    
+    <div class="support-box" id="supportBox">
+        <div class="support-header">
+            Suporte Online
+            <button id="closeSupport">✖</button>
+        </div>
+        <div class="support-body" id="chatBody">
+            <p><strong>Atendente:</strong> Olá! Como posso ajudar você hoje?</p>
+        </div>
+        <div class="support-footer">
+            <input type="text" id="userMessage" placeholder="Digite sua mensagem..." />
+            <button id="sendMessage">Enviar</button>
+        </div>
+    </div>
+    <footer class="footer">
+        <a href="#top">Voltar ao topo</a>
+
+        <br></br>
+
+        <div class="footer-links">
+            <a href="https://www.eniac.edu.br/">Conheça-nos</a>
+            <a
+                href="https://api.whatsapp.com/send?phone=5511912992183&text=Gostaria%20de%20saber%20mais%20sobre%20Medicina%20no%20ENIAC.">Ajuda</a>
+            <a href="#">Sua conta</a>
+        </div>
+        <p class="copy">© 2025, Todos os Direitos Reservados Centro Universitário ENIAC.</p>
+        <p class="copy">
+            R. Força Pública, 89 - Centro, Guarulhos - SP, 07012-030.
+        </p>
+        <p class="copy">Tel: (11) 91299-2183.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
