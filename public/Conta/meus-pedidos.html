@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Pedidos</title>
+    
+    <link rel="stylesheet" href="suaconta.css">
+    
+    <style>
+        /* Estilos específicos para a página de pedidos */
+        .order-card {
+            background: #fff;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            overflow: hidden; /* Garante que os cantos arredondados sejam aplicados */
+        }
+
+        .order-header {
+            background-color: #f7f7f7;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .order-header-info span {
+            display: block;
+            font-size: 14px;
+            color: var(--muted);
+        }
+        
+        .order-header-info strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .order-status {
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+        }
+
+        /* Cores dinâmicas para o status */
+        .status-processando { background-color: #ffc107; color: #333; }
+        .status-enviado { background-color: #17a2b8; color: #fff; }
+        .status-entregue { background-color: #28a745; color: #fff; }
+        .status-cancelado { background-color: #dc3545; color: #fff; }
+        
+        .order-body {
+            padding: 20px;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .product-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        
+        .product-info h4 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .product-info p {
+            margin: 0;
+            font-size: 14px;
+            color: var(--muted);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero">
+        <div class="container">
+            <p class="breadcrumbs"><a href="suaconta.html">Sua Conta</a> &gt; Pedidos</p>
+            <h1>Seus Pedidos</h1>
+            <p>Acompanhe o histórico e o status de suas compras.</p>
+        </div>
+    </header>
+
+    <main class="container-main">
+        <section class="section">
+            <div id="pedidos-container">
+                <p>Carregando seus pedidos...</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+    <div class="footer-wrap">
+        <div>©1946–2025, Eniac.edu.br, Inc. ou suas afiliadas.</div>
+        <div>
+            <a href="#">Política de Privacidade</a> ·
+            <a href="#">Termos de Uso</a>
+        </div>
+    </div>
+</footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('authToken');
+            const container = document.getElementById('pedidos-container');
+
+            if (!token) {
+                alert('Você precisa estar logado para ver seus pedidos.');
+                window.location.href = '/login.cadastro/login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/pedidos/meuspedidos', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Falha ao buscar seus pedidos. Tente fazer login novamente.');
+                }
+
+                const pedidos = await response.json();
+                container.innerHTML = ''; // Limpa a mensagem de "carregando"
+
+                if (pedidos.length === 0) {
+                    container.innerHTML = '<p>Você ainda não fez nenhum pedido.</p>';
+                    return;
+                }
+
+                pedidos.forEach(pedido => {
+                    const statusClass = `status-${pedido.status.toLowerCase()}`;
+
+                    const produtosHTML = pedido.produtos.map(item => `
+                        <div class="product-item">
+                            <img src="${item.produto.imagemUrl || 'https://via.placeholder.com/60'}" alt="${item.produto.nome}">
+                            <div class="product-info">
+                                <h4>${item.produto.nome}</h4>
+                                <p>${item.quantidade} x ${item.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    const pedidoCard = `
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div class="order-header-info">
+                                    <span>PEDIDO REALIZADO EM</span>
+                                    <strong>${new Date(pedido.dataDoPedido).toLocaleDateString('pt-BR')}</strong>
+                                </div>
+                                <div class="order-header-info">
+                                    <span>TOTAL</span>
+                                    <strong>${pedido.totalDoPedido.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong>
+                                </div>
+                                <div class="order-header-info">
+                                    <span>Nº DO PEDIDO</span>
+                                    <strong>#${pedido._id.slice(-7).toUpperCase()}</strong>
+                                </div>
+                                <div>
+                                    <span class="order-status ${statusClass}">${pedido.status}</span>
+                                </div>
+                            </div>
+                            <div class="order-body">
+                                ${produtosHTML}
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += pedidoCard;
+                });
+
+            } catch (error) {
+                console.error('Erro:', error);
+                container.innerHTML = `<p style="color: red;">${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>

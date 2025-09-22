@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Carrinho</title>
+    <link rel="stylesheet" href="/Conta/suaconta.css">
+    <link rel="stylesheet" href="carrinho.css">
+    
+</head>
+<body>
+    <header class="hero">
+        <div class="container">
+            <p class="breadcrumbs"><a href="/tela_principal/index.html">Página Inicial</a> &gt; Carrinho</p>
+            <h1>Meu Carrinho de Compras</h1>
+        </div>
+    </header>
+
+    <main class="container-main">
+        <div class="cart-layout">
+            <div class="cart-items-card">
+                <div id="cart-items-container">
+                    </div>
+            </div>
+
+            <div class="summary-card" id="cart-summary-container">
+                </div>
+        </div>
+    </main>
+
+    <script>
+        function carregarCarrinho() {
+            return JSON.parse(localStorage.getItem('carrinho')) || [];
+        }
+
+        function salvarCarrinho(carrinho) {
+            localStorage.setItem('carrinho', JSON.stringify(carrinho));
+            renderizarCarrinho();
+        }
+
+        function renderizarCarrinho() {
+            const carrinho = carregarCarrinho();
+            const itemsContainer = document.getElementById('cart-items-container');
+            const summaryContainer = document.getElementById('cart-summary-container');
+
+            if (carrinho.length === 0) {
+                itemsContainer.innerHTML = '<h3>Seu carrinho está vazio.</h3>';
+                summaryContainer.innerHTML = '';
+                return;
+            }
+
+            let totalDoPedido = 0;
+            itemsContainer.innerHTML = ''; // Limpa antes de adicionar
+
+            carrinho.forEach((item, index) => {
+                const subtotal = item.preco * item.quantidade;
+                totalDoPedido += subtotal;
+                itemsContainer.innerHTML += `
+                    <div class="cart-item">
+                        <img src="${item.imagemUrl || 'https://via.placeholder.com/90'}" alt="${item.nome}">
+                        <div class="item-info">
+                            <h4>${item.nome}</h4>
+                            <p class="price">${item.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                            <div class="item-actions">
+                                <div class="quantity-selector">
+                                    <button onclick="atualizarQuantidade(${index}, ${item.quantidade - 1})">-</button>
+                                    <input type="number" value="${item.quantidade}" min="1" onchange="atualizarQuantidade(${index}, this.value)">
+                                    <button onclick="atualizarQuantidade(${index}, ${item.quantidade + 1})">+</button>
+                                </div>
+                                <button class="remove-btn" onclick="removerItem(${index})">Remover</button>
+                            </div>
+                        </div>
+                        <p><strong>${subtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong></p>
+                    </div>
+                `;
+            });
+
+            // Renderiza o resumo do pedido
+            summaryContainer.innerHTML = `
+                <h3>Resumo do Pedido</h3>
+                <div class="summary-row">
+                    <span>Subtotal (${carrinho.length} itens)</span>
+                    <span>${totalDoPedido.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Frete</span>
+                    <span>Grátis</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span>${totalDoPedido.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                </div>
+                <button class="btn-checkout" onclick="finalizarCompra()">Finalizar Compra</button>
+            `;
+        }
+
+        function atualizarQuantidade(index, novaQuantidade) {
+            const carrinho = carregarCarrinho();
+            const quantidade = parseInt(novaQuantidade);
+            if (quantidade > 0) {
+                carrinho[index].quantidade = quantidade;
+            } else {
+                // Se a quantidade for 0 ou menos, remove o item
+                carrinho.splice(index, 1);
+            }
+            salvarCarrinho(carrinho);
+        }
+
+        function removerItem(index) {
+            if (!confirm('Tem certeza que deseja remover este item?')) return;
+            let carrinho = carregarCarrinho();
+            carrinho.splice(index, 1);
+            salvarCarrinho(carrinho);
+        }
+
+        async function finalizarCompra() {
+            const carrinho = carregarCarrinho();
+            const token = localStorage.getItem('authToken');
+
+            if (!token) {
+                alert('Você precisa estar logado para finalizar a compra!');
+                window.location.href = '/login.cadastro/login.html';
+                return;
+            }
+
+            const enderecoDeEntrega = prompt("Por favor, confirme seu endereço de entrega:", "Rua Exemplo, 123");
+            if (!enderecoDeEntrega) {
+                alert("Endereço de entrega é obrigatório.");
+                return;
+            }
+
+            document.querySelector('.btn-checkout').disabled = true;
+            document.querySelector('.btn-checkout').textContent = 'Processando...';
+
+            try {
+                const response = await fetch('/api/pedidos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        itensDoCarrinho: carrinho,
+                        enderecoDeEntrega: enderecoDeEntrega
+                    })
+                });
+
+                const resultado = await response.json();
+                if (!response.ok) throw new Error(resultado.mensagem);
+
+                alert('Pedido realizado com sucesso!');
+                salvarCarrinho([]); // Limpa o carrinho
+                window.location.href = '/Conta/meus-pedidos.html';
+
+            } catch (error) {
+                alert(`Erro ao finalizar o pedido: ${error.message}`);
+                document.querySelector('.btn-checkout').disabled = false;
+                document.querySelector('.btn-checkout').textContent = 'Finalizar Compra';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', renderizarCarrinho);
+    </script>
+</body>
+</html>

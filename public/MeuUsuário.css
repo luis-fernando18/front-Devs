@@ -211,3 +211,21 @@
   .senha-texto.forte {
     color: green;
   }
+
+  /* Estilo para o botão de Gerenciar Conta */
+.btn-cta {
+  display: inline-block; /* Essencial para que o <a> aceite padding */
+  background-color: #021724; /* Cor de fundo escura */
+  color: #ffffff; /* Texto branco */
+  padding: 12px 20px;
+  border-radius: 6px;
+  text-decoration: none; /* Remove o sublinhado do link */
+  font-weight: 600;
+  margin-top: 10px;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-cta:hover {
+  background-color: #042a41; /* Um pouco mais claro no hover */
+  transform: translateY(-2px); /* Efeito de elevação */
+}

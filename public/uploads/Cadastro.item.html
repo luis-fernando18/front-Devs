@@ -82,7 +82,8 @@
     input[type="number"],
     input[type="date"],
     input[type="file"],
-    select {
+    select,
+    textarea {
       width: 100%;
       padding: 12px 14px;
       border: 2px solid internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
@@ -94,7 +95,8 @@
 
 
     input:focus,
-    select:focus {
+    select:focus,
+    textarea:focus {
       outline: none;
       border-color: #4facfe;
       box-shadow: 0 0 0 4px rgba(79, 172, 254, 0.2);
@@ -175,37 +177,43 @@
 
 
   <div class="eniac-header">
-    <img src="Logo.png" alt="Logo Eniac">
+    <img src="/logo.png" alt="Logo Eniac">
   </div>
 
   <div class="form-container">
     <div class="form-wrapper" role="form" aria-label="Formulário de Cadastro de Venda">
       <h2>Cadastro de Venda</h2>
 
-      <form action="processa_venda.php" method="POST" enctype="multipart/form-data">
-        <label for="item">Nome do Item:</label>
-        <input type="text" id="item" name="item" required placeholder="Ex: Impressora HP" aria-label="Nome do item">
+      <form> <label for="nome">Nome do Item:</label>
+    <input type="text" id="nome" name="nome" required placeholder="Ex: Impressora HP" aria-label="Nome do item">
 
-        <label for="quantidade">Quantidade:</label>
-        <input type="number" id="quantidade" name="quantidade" required min="1" step="1" placeholder="Ex: 2" aria-label="Quantidade de itens">
+    <label for="descricao">Descrição:</label>
+    <textarea id="descricao" name="descricao" rows="4" required placeholder="Ex: Impressora multifuncional com Wi-Fi..." aria-label="Descrição do item"></textarea>
 
-        <label for="valor">Valor Unitário (R$):</label>
-        <input type="number" id="valor" name="valor" required step="0.01" min="0.01" placeholder="Ex: 349.99" aria-label="Valor unitário do item">
+    <label for="estoque">Quantidade em Estoque:</label>
+    <input type="number" id="estoque" name="estoque" required min="0" step="1" placeholder="Ex: 15" aria-label="Quantidade em estoque">
 
-        <label for="data">Data da Venda:</label>
-        <input type="date" id="data" name="data" required aria-label="Data da venda">
+    <label for="preco">Valor Unitário (R$):</label>
+    <input type="number" id="preco" name="preco" required step="0.01" min="0.01" placeholder="Ex: 349.99" aria-label="Valor unitário do item">
+    
+    <label for="categoria">Categoria:</label>
+    <select id="categoria" name="categoria" required aria-label="Categoria do item">
+    <option value="" disabled selected>Selecione uma categoria...</option>
+    <option value="Eletrônicos">Eletrônicos</option>
+    <option value="Livros">Livros</option>
+    <option value="Saúde e Limpeza">Saúde e Limpeza</option>
+    <option value="Industrial e Científico">Industrial e Científico</option>
+</select>
 
-        <label for="imagem">Imagem do Objeto:</label>
-        <input type="file" id="imagem" name="imagem" accept="image/*" onchange="previewImagem(event)" aria-label="Escolher imagem do objeto">
-        
-        <button type="button" id="removeImageBtn" style="display:none; margin-top: 0.5rem; width:50px; height: 50px; align-items: center;" onclick="removeImage()"><span>X</span></button>
-        
-        <div class="image-preview" id="preview"></div>
+    <label for="imagem">Imagem do Objeto:</label>
+    <input type="file" id="imagem" name="imagem" accept="image/*" onchange="previewImagem(event)" aria-label="Escolher imagem do objeto">
+    
+    <button type="button" id="removeImageBtn" style="display:none; margin-top: 0.5rem; width:auto; padding: 5px 10px;" onclick="removeImage()">Remover Imagem</button>
+    
+    <div class="image-preview" id="preview"></div>
 
-        <button type="button" id="removeImageBtn" style="display:none; margin-top: 0.5rem; width:50px; height: 50px; align-items: center;" onclick="removeImage()"><span>X</span></button>
-
-      <button type="submit" aria-label="Enviar cadastro de venda">Concluir Cadastro</button>
-      </form>
+  <button type="submit" aria-label="Enviar cadastro de venda">Concluir Cadastro</button>
+</form>
     </div>
   </div>
   
@@ -247,6 +255,58 @@ function removeImage() {
   preview.innerHTML = '';    
   removeBtn.style.display = 'none';
 }
+
+    // Seleciona o formulário
+    const formCadastro = document.querySelector('form');
+
+    formCadastro.addEventListener('submit', async (event) => {
+        event.preventDefault(); // Impede o envio padrão do formulário
+
+        // Pega o token do admin logado (ESSENCIAL)
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            alert('Acesso negado. Apenas administradores podem cadastrar produtos.');
+            // O ideal é redirecionar para a página de login
+            // window.location.href = '/login.cadastro/login.html';
+            return;
+        }
+
+        // Usa FormData para pegar todos os campos, incluindo a imagem
+        const formData = new FormData(formCadastro);
+
+        const btnSubmit = formCadastro.querySelector('button[type="submit"]');
+        btnSubmit.disabled = true;
+        btnSubmit.textContent = 'Cadastrando...';
+
+        try {
+            const response = await fetch('/api/produtos', {
+                method: 'POST',
+                headers: {
+                    // Não defina 'Content-Type', o navegador faz isso automaticamente com FormData
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            const resultado = await response.json();
+
+            if (!response.ok) {
+                // Se o backend retornar um erro
+                throw new Error(resultado.mensagem || 'Ocorreu um erro ao cadastrar o produto.');
+            }
+
+            alert('Produto cadastrado com sucesso!');
+            formCadastro.reset(); // Limpa o formulário
+            document.getElementById('preview').innerHTML = ''; // Limpa a pré-visualização da imagem
+
+        } catch (error) {
+            console.error('Erro no cadastro:', error);
+            alert(error.message);
+        } finally {
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = 'Concluir Cadastro';
+        }
+    });
 </script>
 </body>
 </html>
