@@ -1,0 +1,85 @@
+/* Em: public/Conta/ajuda.css */
+
+.help-search-container {
+    margin-bottom: 32px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+.help-search-container h2 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.search-bar {
+    display: flex;
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.search-bar input {
+    flex-grow: 1;
+    border: none;
+    padding: 14px;
+    font-size: 16px;
+}
+
+.search-bar input:focus {
+    outline: none;
+}
+
+.search-bar button {
+    border: none;
+    background: var(--brand);
+    color: #fff;
+    padding: 0 20px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+/* Estilo para o FAQ (Accordion) */
+.faq-item {
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    margin-bottom: 10px;
+    transition: box-shadow 0.2s;
+}
+
+.faq-item:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.faq-question {
+    padding: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Ícone de seta */
+.faq-question::after {
+    content: '▼';
+    font-size: 12px;
+    transition: transform 0.2s;
+}
+
+.faq-answer {
+    padding: 0 16px 16px;
+    color: var(--muted);
+    line-height: 1.6;
+    border-top: 1px solid var(--border);
+}
+
+.faq-section {
+    max-width: 500px; 
+    margin-left: auto;
+    margin-right: auto;
+}

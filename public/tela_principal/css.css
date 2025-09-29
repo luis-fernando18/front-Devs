@@ -318,3 +318,26 @@ cursor: pointer;
   .account-area{display:none}
   .grid{grid-template-columns: 1fr;}
 }
+
+/* Estilo para o botão de Favorito no Modal */
+#modalFavorite {
+    font-size: 20px;
+    color: #ccc; /* Cor do coração inativo */
+    background: #f0f0f0;
+    border-color: #ddd;
+    padding: 8px 12px;
+    transition: color 0.2s, transform 0.2s;
+}
+
+#modalFavorite:hover {
+    color: #ff8a8a; /* Rosa claro no hover */
+}
+
+/* Classe para quando o item É um favorito */
+#modalFavorite.is-favorite {
+    color: #ff0000; /* Coração vermelho vivo */
+}
+
+#modalFavorite.is-favorite:hover {
+    transform: scale(1.1);
+}

@@ -17,6 +17,12 @@
   <link rel="stylesheet" href="PainelADM.css" />
 </head>
 <body>
+
+  <div class="eniac-header">
+    <a href="tela_principal/index.html"><img src="/logo.png" alt="Logo"></a>  
+  </div>
+
+  
   <div class="container">
     <header>
       <h1>Painel do Administrador</h1>
@@ -328,12 +334,9 @@ async function carregarPedidos() {
 
 // --- LÓGICA DO MODAL E FORMULÁRIO DE PRODUTOS ---
 
-// Abrir modal para CADASTRAR
+// Redireciona para a página de cadastro de item
 abrirModalBtn.addEventListener("click", () => {
-    formProduto.reset();
-    produtoIdInput.value = '';
-    tituloModalProduto.textContent = "Cadastrar Novo Produto";
-    modalProduto.style.display = "flex";
+    window.location.href = '/uploads/Cadastro.item.html';
 });
 
 // Envio do formulário (CRIAR ou EDITAR)

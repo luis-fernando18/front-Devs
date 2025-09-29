@@ -503,3 +503,14 @@ td.acoes .delete:hover i {
   stroke: red;
   color: red;
 }
+
+.eniac-header {
+  text-align: center;
+  background-color: #021724;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.eniac-header img {
+  width: 220px;
+  max-width: 90%;
+}

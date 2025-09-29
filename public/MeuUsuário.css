@@ -229,3 +229,14 @@
   background-color: #042a41; /* Um pouco mais claro no hover */
   transform: translateY(-2px); /* Efeito de elevação */
 }
+
+.eniac-header {
+  text-align: center;
+  background-color: #021724;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.eniac-header img {
+  width: 220px;
+  max-width: 90%;
+}

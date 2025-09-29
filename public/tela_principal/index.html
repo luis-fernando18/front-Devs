@@ -22,6 +22,12 @@
             <h2 id="modalTitle"></h2>
             <p id="modalDesc" class="modal-desc"></p>
 
+            <div class="modal-actions">
+                <button id="modalFavorite" class="btn outline" title="Adicionar aos Favoritos">❤</button>
+                
+                <button id="modalAdd" class="btn primary">Adicionar ao carrinho</button>
+            </div>
+
             <div class="modal-price">
                 <span id="modalNow" class="now"></span>
                 <span id="modalOld" class="old"></span>
@@ -31,8 +37,6 @@
             <div id="modalRating" class="rating"></div>
             <div id="modalStock" class="stock"></div>
 
-            <div class="modal-actions">
-                <button id="modalAdd" class="btn primary">Adicionar ao carrinho</button>
             </div>
         </div>
     </div>
@@ -42,8 +46,7 @@
 <body>
     <header class="topbar">
         <a href="#" class="logo" aria-label="Página inicial">
-            <img src="/front-Devs-main/public/logo.png" alt="Eniac Vendas" class="logo-img">
-            </svg>
+            <img src="/logo.png" alt="Eniac Vendas" class="logo-img">
         </a>
 
         <div class="deliver">
@@ -52,7 +55,6 @@
         </div>
 
         <form id="searchForm" class="searchbar" role="search">
-            </select>
             <input id="searchInput" type="search" placeholder="Busque por produtos..." aria-label="Buscar" />
             <button class="btn-search" aria-label="Pesquisar">
                 🔍
@@ -60,11 +62,11 @@
         </form>
 
         <nav class="account-area" aria-label="Acesso rápido">
-            <a href="#" class="account-link">
+            <a href="/login.cadastro/login.html" class="account-link">
                 <span class="small">Olá, faça login</span>
                 <span class="big">Contas e Listas ▾</span>
             </a>
-            <a href="/public/Conta/meus-pedidos.html" class="account-link">
+            <a href="/Conta/meus-pedidos.html" class="account-link">
                 <span class="small">Devoluções</span>
                 <span class="big">e Pedidos</span>
             </a>
@@ -134,7 +136,6 @@
             <div id="productGrid" class="grid" aria-live="polite" aria-busy="false"></div>
         </section>
     </main>
-    <button class="support-btn" id="supportToggle">💬</button>
 
     <div class="support-box" id="supportBox">
         <div class="support-header">
