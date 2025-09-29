@@ -42,12 +42,7 @@
 <body>
     <header class="topbar">
         <a href="#" class="logo" aria-label="Página inicial">
-            <svg viewBox="0 0 300 60" role="img" aria-label="Lojão Azul">
-                <text x="0" y="42" font-size="42" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial"
-                    font-weight="800" fill="white">Eniac</text>
-                <text x="140" y="42" font-size="42"
-                    font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial" font-weight="800"
-                    fill="#9fd3ff">Vendas</text>
+            <img src="/front-Devs-main/public/logo.png" alt="Eniac Vendas" class="logo-img">
             </svg>
         </a>
 
@@ -57,23 +52,6 @@
         </div>
 
         <form id="searchForm" class="searchbar" role="search">
-            <select id="searchCategory" aria-label="Categoria de busca">
-                <option value="all">Todas</option>
-                <option value="Electronics">Eletrônicos</option>
-                <option value="Computers">Computadores</option>
-                <option value="Books">Livros</option>
-                <option value="Home & Kitchen">Casa e Cozinha</option>
-                <option value="Fashion">Moda</option>
-                <option value="Beauty & Personal Care">Beleza</option>
-                <option value="Toys & Games">Brinquedos e Jogos</option>
-                <option value="Sports & Outdoors">Esportes</option>
-                <option value="Automotive">Automotivo</option>
-                <option value="Pet Supplies">Pets</option>
-                <option value="Grocery">Mercado</option>
-                <option value="Health & Household">Saúde</option>
-                <option value="Baby">Bebê</option>
-                <option value="Video Games">Games</option>
-                <option value="Industrial & Scientific">Industrial</option>
             </select>
             <input id="searchInput" type="search" placeholder="Busque por produtos..." aria-label="Buscar" />
             <button class="btn-search" aria-label="Pesquisar">
@@ -114,7 +92,8 @@
                 <li><label><input type="checkbox" value="Eletrônicos" /> Eletrônicos</label></li>
                 <li><label><input type="checkbox" value="Livros" /> Livros</label></li>
                 <li><label><input type="checkbox" value="Saúde e Limpeza" /> Saúde e Limpeza</label></li>
-                <li><label><input type="checkbox" value="Industrial e Científico" /> Industrial e Científico</label></li>
+                <li><label><input type="checkbox" value="Industrial e Científico" /> Industrial e Científico</label>
+                </li>
             </ul>
 
             <hr />
@@ -156,7 +135,7 @@
         </section>
     </main>
     <button class="support-btn" id="supportToggle">💬</button>
-    
+
     <div class="support-box" id="supportBox">
         <div class="support-header">
             Suporte Online
